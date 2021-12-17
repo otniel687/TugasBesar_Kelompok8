@@ -173,3 +173,250 @@ menu_awal:
 
   return 0;
 }
+
+
+int lihatRute() {
+	rute *r;
+	rute r1;
+    FILE *fp;
+    int n,i,j, counter=1;
+    
+
+	
+	printf("\n\n-------------------------------------------------------------------");
+    
+    fp = fopen("rute.txt","r");
+	system("cls");
+	printf("LIHAT DATA RUTE");
+	printf("\nData Lengkap Rute Kereta Api");
+	printf("\n-------------------------------------------------------------------\n");
+	printf("No\t\tKeberangkatan  \tTujuan\t  \tKode_Rute\t   \tBisnis\t    \tPremium\n");
+	while(fread(&r1,sizeof(rute),1,fp)) { 
+		printf("%d\t\t%s\t\t%s\t\t%s\t%d\t%d\n",counter,r1.kbrt,r1.tjn,r1.kode,r1.bisnis,r1.premium);
+		counter++;
+    }
+	
+	printf("\n\n-------------------------------------------------------------------");
+    fclose(fp);
+}
+
+int tambahRute() {
+	rute *r;
+	kota k1;
+    FILE *fp,*fp1;
+    int n,i,j;
+
+    r = (rute*)malloc(100*sizeof(rute));
+    fp = fopen("rute.txt","a+");
+    fp1 = fopen("kota.txt","r");
+    
+	printf("TAMBAH DATA RUTE\n\n");
+	char kode1[100], kode2[100], kode3[100];
+    for(i=0;i<1;i++){
+    	printf("Tambah Data Rute : ");
+    	fflush(stdin);
+        scanf("%s %s %s %d %d",r[i].kbrt,r[i].tjn,r[i].kode,&r[i].bisnis,&r[i].premium);
+        while(fread(&k1,sizeof(kota),1,fp1)) {
+            if(strcmp(r[i].kbrt,k1.nama)==0) {
+            	strcpy(kode1,k1.kode);
+			} 
+			
+			if (strcmp(r[i].tjn,k1.nama)==0) {
+				strcpy(kode2,k1.kode);
+			}
+			
+			strcpy(kode3,strcat(kode1,"-"));
+			strcpy(r[i].kode,(strcat(kode3,kode2)));
+        }
+        
+        fwrite(r+i,sizeof(rute),1,fp);
+    }
+    
+    printf("\n-----------------------------------------");
+    printf("\nData Berhasil Ditambahkan\n");
+    printf("------------------------------------------");
+    
+    fclose(fp);
+    
+    kelolaRute();
+}
+
+
+int hapusRute() {
+	int i, j, found=0;
+    rute r1;
+    FILE *fp, *fp1;
+    char kode[100];
+    fp = fopen("rute.txt","r");
+	system("cls");
+	lihatRute();
+    
+    printf("\nDelete Rute : DELETE_");
+    fflush(stdin);
+    scanf("%[^\n]s",kode);
+
+    fp = fopen("rute.txt","r");
+    fp1 = fopen("temp.txt","w");
+    while(fread(&r1,sizeof(rute),1,fp)){
+        if(strcmp(r1.kode,kode)==0){
+            found = 1;
+        }
+        else
+            fwrite(&r1,sizeof(rute),1,fp1);
+    }
+    fclose(fp);
+    fclose(fp1);
+
+
+    if(found){
+        fp = fopen("rute.txt","w");
+        fp1 = fopen("temp.txt","r");
+
+        while(fread(&r1,sizeof(rute),1,fp1)){
+            fwrite(&r1,sizeof(rute),1,fp);
+        }
+        fclose(fp);
+        fclose(fp1);
+    }
+    else
+        printf("\nNot Found.....\n");
+}
+
+int kelolaRute() {
+	int i, j, counter=1;
+    rute r1;
+    rute *r;
+    FILE *fp;
+	
+	fp = fopen("rute.txt","r");
+
+	system("cls");
+	printf("LIHAT DATA RUTE");
+	printf("\nData Lengkap Rute Kereta Api");
+	printf("\n-------------------------------------------------------------------\n");
+    
+    printf("No\t\tKeberangkatan\tTujuan\t\tKode_Rute\t\tBisnis\t\tPremium\n");
+	while(fread(&r1,sizeof(rute),1,fp)) { 
+		printf("%d\t\t%s\t\t%s\t\t%s\t\t%d\t\t%d\n",counter,r1.kbrt,r1.tjn,r1.kode,r1.bisnis,r1.premium);
+		counter++;
+    }
+	
+	printf("\n\n-------------------------------------------------------------------");
+	
+	printf("\n\n1. Tambah Data Rute");
+	printf("\n2. Lihat Data Rute");
+	printf("\n3. Edit Data Rute");
+	printf("\n4. Delete Data Rute");
+	printf("\n99. Menu Utama");
+	
+	printf("\n\nPilihan : ");
+	int choice;
+	fflush(stdin);
+	scanf("%d",&choice);
+	
+	switch(choice) {
+		case 1: 
+			system("cls");
+			tambahRute();
+			kelolaRute();
+			break;
+		case 2:
+			system("cls");
+			lihatRute();
+			kelolaRute();
+			break;
+		case 3:
+			system("cls");
+			editRute();
+			kelolaRute();
+			break;
+		case 4:
+			hapusRute();
+			kelolaRute();
+			system("cls");
+			break;
+		case 99:
+			system("cls");
+			menuAdmin();
+			break;
+		default:
+			printf("Inputan anda tidak valid !");
+	}
+}
+
+int editRute() {
+	rute *r;
+	int i=0;
+	int j, found=0, counter=1;
+    rute r1;
+    kota k1;
+    FILE *fp, *fp1, *fp2;
+    
+    char kode[100], kode1[100], kode2[100], kode3[100];
+    
+	system("cls");
+    lihatRute();
+
+
+    fflush(stdin);
+    
+	fp = fopen("kota.txt","r");
+    fp1 = fopen("rute.txt","r");
+    fp2 = fopen("temp.txt","w");
+    
+    
+    printf("\n\nEdit Rute : \nEDIT_");
+    scanf("%[^\n]s",kode);
+    
+	while(fread(&r1,sizeof(rute),1,fp1)){
+    	if(strcmp(r1.kode,kode)==0){
+   			found = 1;
+	    	fflush(stdin);
+            printf("\nKeberangkatan : ");
+		    scanf("%[^\n]s",r1.kbrt);
+		    fflush(stdin);
+		    printf("Tujuan : ");
+		    scanf("%[^\n]s",r1.tjn);
+		    fflush(stdin);
+		    printf("Bisnis : ");
+		    scanf("%d",&r1.bisnis);
+		    fflush(stdin);
+		    printf("Premium : ");
+		    scanf("%d",&r1.premium);
+	
+			while(fread(&k1,sizeof(kota),1,fp)) {
+	            if(strcmp(r1.kbrt,k1.nama)==0) {
+	            	strcpy(kode1,k1.kode);
+				} 
+				
+				if (strcmp(r1.tjn,k1.nama)==0) {
+					strcpy(kode2,k1.kode);
+				}
+				strcpy(kode3,strcat(kode1,"-"));
+				strcpy(r1.kode,(strcat(kode3,kode2)));
+	        }
+	    	
+        } 
+        
+    	fwrite(&r1,sizeof(rute),1,fp2);
+    }
+    fclose(fp);
+    fclose(fp1);
+    fclose(fp2);
+    
+    if (found==1) {
+	    
+    	fp = fopen("rute.txt","w");
+    	fp1 = fopen("temp.txt","r");
+    	
+		while(fread(&k1,sizeof(rute),1,fp1)) {
+            fwrite(&k1,sizeof(rute),1,fp);
+        }
+        
+	    fclose(fp);
+	    fclose(fp1);
+	    
+	} else {
+		printf("\n\nnot found");
+	}
+}
