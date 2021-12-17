@@ -420,3 +420,44 @@ int editRute() {
 		printf("\n\nnot found");
 	}
 }
+
+
+int menuAdmin() {
+	system("cls");
+	printf("#MENU ADMIN#");
+	int i, j, found=0;
+    pengguna s1;
+    FILE *fp;
+    
+	printf("\nWelcome, admin");
+	printf("\n\n1. Kelola Akun");
+	printf("\n2. Kelola Kota");
+	printf("\n3. Kelola Rute");
+	printf("\n4. Lihat Pemasukan");
+	printf("\n5. Lihat Jadwal Kereta Api");
+	printf("\n0. Logout");
+	printf("\n\nPilihan : ");
+	
+	int choice;
+	fflush(stdin);
+	scanf("%d",&choice);
+	
+	switch(choice) {
+		case 1:
+			system("cls");
+			kelolaPengguna();
+			break;
+		case 2: 
+			system("cls");
+			kelolaKota();
+			break;
+		case 3:
+			system("cls");
+			kelolaRute();
+			break;
+			
+		default:
+			
+			break;
+	}
+}
