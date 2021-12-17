@@ -422,42 +422,416 @@ int editRute() {
 }
 
 
-int menuAdmin() {
-	system("cls");
-	printf("#MENU ADMIN#");
+
+int hapusKota() {
 	int i, j, found=0;
-    pengguna s1;
-    FILE *fp;
+    kota k1;
+    FILE *fp, *fp1;
+    char kode[100];
+    fp = fopen("kota.txt","r");
+	system("cls");
+	lihatKota();
     
-	printf("\nWelcome, admin");
-	printf("\n\n1. Kelola Akun");
-	printf("\n2. Kelola Kota");
-	printf("\n3. Kelola Rute");
-	printf("\n4. Lihat Pemasukan");
-	printf("\n5. Lihat Jadwal Kereta Api");
-	printf("\n0. Logout");
-	printf("\n\nPilihan : ");
+    printf("\nDelete Kota : DELETE_");
+    fflush(stdin);
+    scanf("%[^\n]s",kode);
+
+    fp = fopen("kota.txt","r");
+    fp1 = fopen("temp.txt","w");
+    while(fread(&k1,sizeof(kota),1,fp)){
+        if(strcmp(k1.kode,kode)==0){
+            found = 1;
+        }
+        else
+            fwrite(&k1,sizeof(kota),1,fp1);
+    }
+    fclose(fp);
+    fclose(fp1);
+
+
+    if(found){
+        fp = fopen("kota.txt","w");
+        fp1 = fopen("temp.txt","r");
+
+        while(fread(&k1,sizeof(kota),1,fp1)){
+            fwrite(&k1,sizeof(kota),1,fp);
+        }
+        fclose(fp);
+        fclose(fp1);
+    }
+    else
+        printf("\nNot Found.....\n");
+} 
+
+
+int lihatKota() {
+	kota *k;
+	kota k1;
+    FILE *fp;
+    int n,i,j, counter=1;
+    
+    fp = fopen("kota.txt","r");
+	system("cls");
+	printf("LIHAT DATA KOTA");
+	printf("\nData Lengkap Kota");
+	printf("\n-------------------------------------------------------------------\n");
+	printf("No\t\tKode Kota\t\tNama Kota\n");
+	while(fread(&k1,sizeof(kota),1,fp)) { 
+		printf("%d\t\t%s\t\t\t%s\n",counter,k1.kode,k1.nama);
+		counter++;
+    }
 	
+	printf("\n\n-------------------------------------------------------------------");
+    fclose(fp);
+}
+
+int editKota() {
+	int i=0;
+	int j, found=0, counter=1;
+    kota k1;
+    FILE *fp, *fp1;
+    char kode[100];
+    
+    fp = fopen("kota.txt","r");
+	
+    printf("EDIT DATA KOTA");
+    
+	printf("\nData Lengkap Kota");
+	printf("\n-------------------------------------------------------------------\n");
+	printf("No\t\tKode Kota\t\tNama Kota\n");
+	while(fread(&k1,sizeof(kota),1,fp)) { 
+		printf("%d\t\t%s\t\t\t%s\n",counter,k1.kode,k1.nama);
+		counter++;
+    }
+	
+	printf("\n\n-------------------------------------------------------------------");
+	
+	fclose(fp);
+
+    fflush(stdin);
+    printf("\n\nEdit Kota : \nEDIT_");
+    scanf("%[^\n]s",kode);
+    
+    fp = fopen("kota.txt","r");
+    fp1 = fopen("temp.txt","w");
+    
+    while(fread(&k1,sizeof(kota),1,fp)){
+        if(strcmp(k1.kode,kode)==0){
+       		found = 1;
+        	fflush(stdin);
+            printf("\nKode Kota : ");
+		    scanf("%[^\n]s",k1.kode);
+		    fflush(stdin);
+		    printf("Nama Kota : ");
+		    scanf("%[^\n]s",k1.nama);
+        } 
+        fwrite(&k1,sizeof(kota),1,fp1);
+    }
+    fclose(fp);
+    fclose(fp1);
+    
+    if (found==1) {
+    	fp = fopen("kota.txt","w");
+    	fp1 = fopen("temp.txt","r");
+    	while(fread(&k1,sizeof(kota),1,fp1)) {
+            fwrite(&k1,sizeof(kota),1,fp);
+        }
+        
+	    fclose(fp);
+	    fclose(fp1);
+	} else {
+		printf("\n\nnot found");
+	}
+	
+	kelolaKota();
+}
+
+int tambahKota() {
+	kota *k;
+    FILE *fp;
+    int n,i,j;
+
+    k = (kota*)malloc(100*sizeof(kota));
+    fp = fopen("kota.txt","a+");
+    
+	printf("TAMBAH DATA KOTA\n\n");
+    for(i=0;i<1;i++){
+    	printf("Tambah Kota : ");
+    	fflush(stdin);
+        scanf("%s %s",k[i].kode,k[i].nama);
+        
+        fwrite(k+i,sizeof(kota),1,fp);
+    }
+    
+    fclose(fp);
+    
+}
+
+
+int kelolaKota() {
+	int i, j, counter=1;
+    kota k1;
+    kota *k;
+    FILE *fp;
+	
+	fp = fopen("kota.txt","r");
+
+	system("cls");
+	printf("#LIHAT DATA KOTA#");
+	printf("\nData Lengkap Kota");
+	printf("\n-------------------------------------------------------------------\n");
+	printf("No\t\tKode Kota\t\tNama Kota\n");
+	while(fread(&k1,sizeof(kota),1,fp)) { 
+		printf("%d\t\t%s\t\t\t%s\n",counter,k1.kode,k1.nama);
+		counter++;
+    }
+	
+	printf("\n\n-------------------------------------------------------------------");
+	
+	printf("\n\n1. Tambah Data Kota");
+	printf("\n2. Lihat Data Kota");
+	printf("\n3. Edit Data Kota");
+	printf("\n4. Delete Data Kota");
+	printf("\n99. Menu Utama");
+	
+	printf("\n\nPilihan : ");
 	int choice;
 	fflush(stdin);
 	scanf("%d",&choice);
 	
 	switch(choice) {
-		case 1:
+		case 1: 
 			system("cls");
-			kelolaPengguna();
+			tambahKota();
+			kelolaKota();
 			break;
-		case 2: 
+		case 2:
 			system("cls");
+			lihatKota();
 			kelolaKota();
 			break;
 		case 3:
 			system("cls");
-			kelolaRute();
+			editKota();
+			kelolaKota();
 			break;
-			
+		case 4:
+			system("cls");
+			hapusKota();
+			kelolaKota();
+			break;
+		case 99:
+			system("cls");
+			menuAdmin();
+			break;
 		default:
-			
-			break;
+			printf("Inputan anda tidak valid !");
 	}
+
+int hapusKota() {
+	int i, j, found=0;
+    kota k1;
+    FILE *fp, *fp1;
+    char kode[100];
+    fp = fopen("kota.txt","r");
+	system("cls");
+	lihatKota();
+    
+    printf("\nDelete Kota : DELETE_");
+    fflush(stdin);
+    scanf("%[^\n]s",kode);
+
+    fp = fopen("kota.txt","r");
+    fp1 = fopen("temp.txt","w");
+    while(fread(&k1,sizeof(kota),1,fp)){
+        if(strcmp(k1.kode,kode)==0){
+            found = 1;
+        }
+        else
+            fwrite(&k1,sizeof(kota),1,fp1);
+    }
+    fclose(fp);
+    fclose(fp1);
+
+
+    if(found){
+        fp = fopen("kota.txt","w");
+        fp1 = fopen("temp.txt","r");
+
+        while(fread(&k1,sizeof(kota),1,fp1)){
+            fwrite(&k1,sizeof(kota),1,fp);
+        }
+        fclose(fp);
+        fclose(fp1);
+    }
+    else
+        printf("\nNot Found.....\n");
+} 
+
+
+int lihatKota() {
+	kota *k;
+	kota k1;
+    FILE *fp;
+    int n,i,j, counter=1;
+    
+    fp = fopen("kota.txt","r");
+	system("cls");
+	printf("LIHAT DATA KOTA");
+	printf("\nData Lengkap Kota");
+	printf("\n-------------------------------------------------------------------\n");
+	printf("No\t\tKode Kota\t\tNama Kota\n");
+	while(fread(&k1,sizeof(kota),1,fp)) { 
+		printf("%d\t\t%s\t\t\t%s\n",counter,k1.kode,k1.nama);
+		counter++;
+    }
+	
+	printf("\n\n-------------------------------------------------------------------");
+    fclose(fp);
+}
+
+int editKota() {
+	int i=0;
+	int j, found=0, counter=1;
+    kota k1;
+    FILE *fp, *fp1;
+    char kode[100];
+    
+    fp = fopen("kota.txt","r");
+	
+    printf("EDIT DATA KOTA");
+    
+	printf("\nData Lengkap Kota");
+	printf("\n-------------------------------------------------------------------\n");
+	printf("No\t\tKode Kota\t\tNama Kota\n");
+	while(fread(&k1,sizeof(kota),1,fp)) { 
+		printf("%d\t\t%s\t\t\t%s\n",counter,k1.kode,k1.nama);
+		counter++;
+    }
+	
+	printf("\n\n-------------------------------------------------------------------");
+	
+	fclose(fp);
+
+    fflush(stdin);
+    printf("\n\nEdit Kota : \nEDIT_");
+    scanf("%[^\n]s",kode);
+    
+    fp = fopen("kota.txt","r");
+    fp1 = fopen("temp.txt","w");
+    
+    while(fread(&k1,sizeof(kota),1,fp)){
+        if(strcmp(k1.kode,kode)==0){
+       		found = 1;
+        	fflush(stdin);
+            printf("\nKode Kota : ");
+		    scanf("%[^\n]s",k1.kode);
+		    fflush(stdin);
+		    printf("Nama Kota : ");
+		    scanf("%[^\n]s",k1.nama);
+        } 
+        fwrite(&k1,sizeof(kota),1,fp1);
+    }
+    fclose(fp);
+    fclose(fp1);
+    
+    if (found==1) {
+    	fp = fopen("kota.txt","w");
+    	fp1 = fopen("temp.txt","r");
+    	while(fread(&k1,sizeof(kota),1,fp1)) {
+            fwrite(&k1,sizeof(kota),1,fp);
+        }
+        
+	    fclose(fp);
+	    fclose(fp1);
+	} else {
+		printf("\n\nnot found");
+	}
+	
+	kelolaKota();
+}
+
+int tambahKota() {
+	kota *k;
+    FILE *fp;
+    int n,i,j;
+
+    k = (kota*)malloc(100*sizeof(kota));
+    fp = fopen("kota.txt","a+");
+    
+	printf("TAMBAH DATA KOTA\n\n");
+    for(i=0;i<1;i++){
+    	printf("Tambah Kota : ");
+    	fflush(stdin);
+        scanf("%s %s",k[i].kode,k[i].nama);
+        
+        fwrite(k+i,sizeof(kota),1,fp);
+    }
+    
+    fclose(fp);
+    
+}
+
+
+int kelolaKota() {
+	int i, j, counter=1;
+    kota k1;
+    kota *k;
+    FILE *fp;
+	
+	fp = fopen("kota.txt","r");
+
+	system("cls");
+	printf("#LIHAT DATA KOTA#");
+	printf("\nData Lengkap Kota");
+	printf("\n-------------------------------------------------------------------\n");
+	printf("No\t\tKode Kota\t\tNama Kota\n");
+	while(fread(&k1,sizeof(kota),1,fp)) { 
+		printf("%d\t\t%s\t\t\t%s\n",counter,k1.kode,k1.nama);
+		counter++;
+    }
+	
+	printf("\n\n-------------------------------------------------------------------");
+	
+	printf("\n\n1. Tambah Data Kota");
+	printf("\n2. Lihat Data Kota");
+	printf("\n3. Edit Data Kota");
+	printf("\n4. Delete Data Kota");
+	printf("\n99. Menu Utama");
+	
+	printf("\n\nPilihan : ");
+	int choice;
+	fflush(stdin);
+	scanf("%d",&choice);
+	
+	switch(choice) {
+		case 1: 
+			system("cls");
+			tambahKota();
+			kelolaKota();
+			break;
+		case 2:
+			system("cls");
+			lihatKota();
+			kelolaKota();
+			break;
+		case 3:
+			system("cls");
+			editKota();
+			kelolaKota();
+			break;
+		case 4:
+			system("cls");
+			hapusKota();
+			kelolaKota();
+			break;
+		case 99:
+			system("cls");
+			menuAdmin();
+			break;
+		default:
+			printf("Inputan anda tidak valid !");
+	}
+	
+}	
 }
