@@ -1,5 +1,5 @@
 #include "boolean.h"
-#include "Header_KA.h"
+#include "kaHeader.h"
 #include "stdio.h"
 #include "stdlib.h"
 #include "string.h"
@@ -15,7 +15,7 @@ void cetakInformasi(KA *data) {
   key = "y";
 
   while (data != NULL) {
-    printf("Nama Kereta Api\t\t: %s\n", data->namaKeretaApi);
+    printf("Nama Kereta Api\t\t: %s\n", data->namaKA);
     printf("Destinasi\t\t: %s\n", data->destinasi);
     printf("Jam Keberangkatan\t: %s\n", data->jam_keberangkatan);
     printf("Daya Tampung\t\t: %d Orang\n", data->daya_tampung);
@@ -43,7 +43,7 @@ void daftarKa(KA *data) {
 
   printf("=====Daftar KA Tersedia=====\n");
   while (data != NULL) {
-    printf("[%d] %s\n", i, data->namaKeretaApi);
+    printf("[%d] %s\n", i, data->namaKA);
     i++;
     data = data->nextNode;
   }
@@ -56,17 +56,17 @@ void pilihanKa(KA *data, int pilih, int pesan_jumlah) {
 
   while (data != NULL) {
     if (pilih == data->kode_kereta) {
-      printf("=====Menu Tiket %s=====\n", data->namaKeretaApi);
+      printf("=====Menu Tiket %s=====\n", data->namaKA);
       printf("Kapasitas Penumpang\t: %d orang\n", data->daya_tampung);
       printf("Tiket Tersedia\t\t: %d tiket\n", data->sisa_tiket);
       printf("\nDetail Kelas Kereta\n");
-      printf("1. atas\t- Rp.%d/orang\nTiket "
+      printf("1. Eksekutif\t- Rp.%d/orang\nTiket "
              "Tersedia\t: %d tiket\n",
-             data->harga_atas, data->kelas_atas);
+             data->harga_eksekutif, data->kelas_eksekutif);
       printf("===================================\n");
-      printf("2. menengah\t- Rp.%d/orang\nTiket "
+      printf("2. Bisnis\t- Rp.%d/orang\nTiket "
              "Tersedia\t: %d tiket\n",
-             data->harga_menengah, data->kelas_menengah);
+             data->harga_bisnis, data->kelas_bisnis);
       printf("===================================\n");
       printf("3. Biasa\t- Rp.%d/orang\nTiket "
              "Tersedia\t: %d tiket\n",
@@ -85,15 +85,15 @@ boolean operasitiket(KA *data, int pilih_kelas, int pesan_jumlah,
 
   while (data != NULL) {
     if (pilih_ka == data->kode_kereta) {
-      if (pilih_kelas == data->id_atas && data->kelas_atas != 0 &&
-          pesan_jumlah <= data->kelas_atas) {
-        data->kelas_atas -= pesan_jumlah;
+      if (pilih_kelas == data->id_eksekutif && data->kelas_eksekutif != 0 &&
+          pesan_jumlah <= data->kelas_eksekutif) {
+        data->kelas_eksekutif -= pesan_jumlah;
         data->sisa_tiket -= pesan_jumlah;
         return 1;
         break;
-      } else if (pilih_kelas == data->id_menengah && data->kelas_menengah != 0 &&
-                 pesan_jumlah <= data->kelas_menengah) {
-        data->kelas_menengah -= pesan_jumlah;
+      } else if (pilih_kelas == data->id_bisnis && data->kelas_bisnis != 0 &&
+                 pesan_jumlah <= data->kelas_bisnis) {
+        data->kelas_bisnis -= pesan_jumlah;
         data->sisa_tiket -= pesan_jumlah;
         return 1;
         break;
@@ -113,40 +113,40 @@ boolean operasitiket(KA *data, int pilih_kelas, int pesan_jumlah,
 }
 
 // prosedur yang digunakan untuk menghitung kenaikan harga 20%
-void hargaNaik(KA *data, int sz_atas1, int sz_menengah1, int sz_biasa1,
-               int sz_atas2, int sz_menengah2, int sz_biasa2,
-               int sz_atas3, int sz_menengah3, int sz_biasa3,
-               int harga_atas1, int harga_menengah1, int harga_biasa1,
-               int harga_atas2, int harga_menengah2, int harga_biasa2,
-               int harga_atas3, int harga_menengah3, int harga_biasa3,
+void hargaNaik(KA *data, int sz_eksekutif1, int sz_bisnis1, int sz_biasa1,
+               int sz_eksekutif2, int sz_bisnis2, int sz_biasa2,
+               int sz_eksekutif3, int sz_bisnis3, int sz_biasa3,
+               int harga_eksekutif1, int harga_bisnis1, int harga_biasa1,
+               int harga_eksekutif2, int harga_bisnis2, int harga_biasa2,
+               int harga_eksekutif3, int harga_bisnis3, int harga_biasa3,
                int pilih_ka) {
 
   if (pilih_ka == 1) {
-    if (data->kelas_atas <= (int)sz_atas1 * 0.4) {
-      data->harga_atas = (int)(harga_atas1 * 1.2);
+    if (data->kelas_eksekutif <= (int)sz_eksekutif1 * 0.4) {
+      data->harga_eksekutif = (int)(harga_eksekutif1 * 1.2);
     }
-    if (data->kelas_menengah <= (int)sz_menengah1 * 0.4) {
-      data->harga_menengah = (int)(harga_menengah1 * 1.2);
+    if (data->kelas_bisnis <= (int)sz_bisnis1 * 0.4) {
+      data->harga_bisnis = (int)(harga_bisnis1 * 1.2);
     }
     if (data->kelas_biasa <= (int)sz_biasa1 * 0.4) {
       data->harga_biasa = (int)(harga_biasa1 * 1.2);
     }
   } else if (pilih_ka == 2) {
-    if (data->kelas_atas <= (int)sz_atas2 * 0.4) {
-      data->harga_atas = (int)(harga_atas2 * 1.2);
+    if (data->kelas_eksekutif <= (int)sz_eksekutif2 * 0.4) {
+      data->harga_eksekutif = (int)(harga_eksekutif2 * 1.2);
     }
-    if (data->kelas_menengah <= (int)sz_menengah2 * 0.4) {
-      data->harga_menengah = (int)(harga_menengah2 * 1.2);
+    if (data->kelas_bisnis <= (int)sz_bisnis2 * 0.4) {
+      data->harga_bisnis = (int)(harga_bisnis2 * 1.2);
     }
     if (data->kelas_biasa <= (int)sz_biasa2 * 0.4) {
       data->harga_biasa = (int)(harga_biasa2 * 1.2);
     }
   } else if (pilih_ka == 3) {
-    if (data->kelas_atas <= (int)sz_atas3 * 0.4) {
-      data->harga_atas = (int)(harga_atas3 * 1.2);
+    if (data->kelas_eksekutif <= (int)sz_eksekutif3 * 0.4) {
+      data->harga_eksekutif = (int)(harga_eksekutif3 * 1.2);
     }
-    if (data->kelas_menengah <= (int)sz_menengah3 * 0.4) {
-      data->harga_menengah = (int)(harga_menengah3 * 1.2);
+    if (data->kelas_bisnis <= (int)sz_bisnis3 * 0.4) {
+      data->harga_bisnis = (int)(harga_bisnis3 * 1.2);
     }
     if (data->kelas_biasa <= (int)sz_biasa3 * 0.4) {
       data->harga_biasa = (int)(harga_biasa3 * 1.2);
@@ -156,18 +156,18 @@ void hargaNaik(KA *data, int sz_atas1, int sz_menengah1, int sz_biasa1,
 
 // prosedur untuk menghitung keuntungan
 void hitungKeuntungan(KA *data, int pilih_ka, int pilih_kelas,
-                      int pesan_tiket) {
+                      int pesan_jumlah_tiket) {
   while (data != NULL) {
     if (pilih_ka == data->kode_kereta) {
-      if (pilih_kelas == data->id_atas &&
-          pesan_tiket <= data->kelas_atas) {
-        data->keuntungan_kereta += pesan_tiket * data->harga_atas;
-      } else if (pilih_kelas == data->id_menengah &&
-                 pesan_tiket <= data->kelas_menengah) {
-        data->keuntungan_kereta += pesan_tiket * data->harga_menengah;
+      if (pilih_kelas == data->id_eksekutif &&
+          pesan_jumlah_tiket <= data->kelas_eksekutif) {
+        data->keuntungan_kereta += pesan_jumlah_tiket * data->harga_eksekutif;
+      } else if (pilih_kelas == data->id_bisnis &&
+                 pesan_jumlah_tiket <= data->kelas_bisnis) {
+        data->keuntungan_kereta += pesan_jumlah_tiket * data->harga_bisnis;
       } else if (pilih_kelas == data->id_biasa &&
-                 pesan_tiket <= data->kelas_biasa) {
-        data->keuntungan_kereta += pesan_tiket * data->harga_biasa;
+                 pesan_jumlah_tiket <= data->kelas_biasa) {
+        data->keuntungan_kereta += pesan_jumlah_tiket * data->harga_biasa;
       }
     }
 
@@ -187,7 +187,7 @@ void cetakKeuntungan(KA *data) {
   key = "y";
 
   while (data != NULL) {
-    printf("-----Total Biaya Kereta %s-----\n", data->namaKeretaApi);
+    printf("-----Total Biaya Kereta %s-----\n", data->namaKA);
     printf("Pendapatan\t: Rp.%d\n", data->keuntungan_kereta);
     printf("Modal Dasar\t: Rp.%d\n", MODAL_DASAR);
     printf("Keuntungan\t: Rp.%d\n\n", data->keuntungan_kereta - MODAL_DASAR);
